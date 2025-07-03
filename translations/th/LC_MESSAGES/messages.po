@@ -1,0 +1,155 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Medicine Management System\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-07-01 12:22\n"
+"PO-Revision-Date: 2025-07-01 12:22\n"
+"Last-Translator: \n"
+"Language: th\n"
+"Language-Team: \n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: templates/base.html
+msgid "login"
+msgstr "เข้าสู่ระบบ"
+
+msgid "username"
+msgstr "ชื่อผู้ใช้"
+
+msgid "password"
+msgstr "รหัสผ่าน"
+
+msgid "confirm_password"
+msgstr "ยืนยันรหัสผ่าน"
+
+msgid "role"
+msgstr "บทบาท"
+
+msgid "doctor"
+msgstr "👨⚕️ แพทย์"
+
+msgid "patient"
+msgstr "👤 ผู้ป่วย"
+
+msgid "submit"
+msgstr "เข้าสู่ระบบ"
+
+msgid "select_role"
+msgstr "เลือกบทบาท"
+
+msgid "welcome"
+msgstr "ยินดีต้อนรับสู่ระบบจัดการยา"
+
+msgid "dont_have_account"
+msgstr "ยังไม่มีบัญชีผู้ใช้?"
+
+msgid "register"
+msgstr "สมัครสมาชิก"
+
+msgid "please_specify_allergies"
+msgstr "กรุณาระบุยาที่แพ้ (ถ้ามี)"
+
+msgid "processing"
+msgstr "กำลังดำเนินการ..."
+
+msgid "please_enter_your_username"
+msgstr "กรุณากรอกชื่อผู้ใช้"
+
+msgid "username_length_validation"
+msgstr "ชื่อผู้ใช้ต้องมีความยาวระหว่าง 3-80 ตัวอักษร"
+
+msgid "please_enter_your_password"
+msgstr "กรุณากรอกรหัสผ่าน"
+
+msgid "password_length_validation"
+msgstr "รหัสผ่านต้องมีความยาวอย่างน้อย 6 ตัวอักษร"
+
+msgid "please_select_role"
+msgstr "กรุณาเลือกบทบาท"
+
+msgid "please_enter_your_credentials"
+msgstr "กรุณากรอกข้อมูลเพื่อเข้าสู่ระบบ"
+
+msgid "please_fill_in_all_fields"
+msgstr "กรุณากรอกข้อมูลให้ครบถ้วน"
+
+msgid "name"
+msgstr "ชื่อ-นามสกุล"
+
+msgid "email"
+msgstr "อีเมล"
+
+msgid "phone"
+msgstr "เบอร์โทรศัพท์"
+
+msgid "back_to_home"
+msgstr "กลับหน้าหลัก"
+
+msgid "patient_system"
+msgstr "ระบบจัดการคนไข้"
+
+msgid "patient_registration"
+msgstr "ระบบลงทะเบียนคนไข้"
+
+msgid "register_to_get_medicine"
+msgstr "ลงทะเบียนเพื่อรับยา"
+
+msgid "age"
+msgstr "อายุ"
+
+msgid "gender"
+msgstr "เพศ"
+
+msgid "select_gender"
+msgstr "เลือกเพศ"
+
+msgid "male"
+msgstr "ชาย"
+
+msgid "female"
+msgstr "หญิง"
+
+msgid "phone_number"
+msgstr "เบอร์โทรศัพท์"
+
+msgid "symptoms"
+msgstr "อาการ"
+
+msgid "allergy_history"
+msgstr "ประวัติการแพ้ยา"
+
+msgid "please_wait_for_medicine"
+msgstr "กรุณารอรับยา"
+
+msgid "processing_your_request"
+msgstr "กำลังดำเนินการ กรุณารอสักครู่..."
+
+msgid "loading"
+msgstr "กำลังโหลด"
+
+msgid "medicine_ready"
+msgstr "ยาพร้อมแล้ว"
+
+msgid "please_show_qr_code"
+msgstr "กรุณาแสดง QR Code ที่เคาน์เตอร์"
+
+msgid "waiting_for_prescription"
+msgstr "กำลังรอใบสั่งยา"
+
+msgid "prescription_ready"
+msgstr "ใบสั่งยาพร้อมแล้ว"
+
+msgid "prescription_ready_message"
+msgstr "ใบสั่งยาของคุณพร้อมแล้ว!"
+
+msgid "show_qr_code"
+msgstr "แสดง QR Code"
+
+msgid "patient_info"
+msgstr "ข้อมูลผู้ป่วย"
+
+msgid "waiting_time"
+msgstr "" 

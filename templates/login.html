@@ -1,0 +1,379 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('login') }} - {{ _('welcome') }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    body {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        min-height: 100vh;
+        padding: 20px 0;
+        animation: fadeIn 1s ease-in;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Alert styling */
+    .alert {
+        position: relative;
+        margin: 0 auto 20px;
+        width: 100%;
+        max-width: 500px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border: none;
+        border-radius: 8px;
+        padding: 12px 20px;
+    }
+
+    .alert-danger {
+        background-color: #f8d7da;
+        color: #721c24;
+        border-left: 4px solid #f5c6cb;
+    }
+
+    .alert-success {
+        background-color: #d4edda;
+        color: #155724;
+        border-left: 4px solid #c3e6cb;
+    }
+
+    .alert-warning {
+        background-color: #fff3cd;
+        color: #856404;
+        border-left: 4px solid #ffeeba;
+    }
+
+    .alert i {
+        margin-right: 8px;
+    }
+
+    .btn-close {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        padding: 0.5rem 0.5rem;
+        background: transparent url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23000'%3e%3cpath d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z'/%3e%3c/svg%3e") center/1em auto no-repeat;
+        opacity: 0.5;
+    }
+
+    /* Container and card styling */
+    .container {
+        width: 100%;
+        max-width: 1200px;
+        padding: 0 15px;
+        margin: 0 auto;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: scale(0.95); }
+        to { opacity: 1; transform: scale(1); }
+    }
+
+    .container {
+        max-width: 500px;
+        width: 90%;
+        padding: 20px;
+    }
+
+    .card {
+        border: none;
+        border-radius: 20px;
+        backdrop-filter: blur(15px);
+        background: rgba(255, 255, 255, 0.9);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-header {
+        text-align: center;
+        padding: 30px;
+        background: none;
+        border-bottom: none;
+    }
+
+    .card-header h2 {
+        font-weight: bold;
+        color: #333;
+    }
+
+    .card-header p {
+        color: #555;
+        margin-top: 10px;
+    }
+
+    .card-body {
+        padding: 30px;
+    }
+
+    .form-control {
+        border-radius: 10px;
+        padding: 12px 20px;
+        border: 1px solid #ddd;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: #4CAF50;
+        box-shadow: 0 0 0 0.2rem rgba(76, 175, 80, 0.25);
+    }
+
+    .btn-primary {
+        background: linear-gradient(45deg, #4CAF50, #2E7D32);
+        border: none;
+        padding: 12px 30px;
+        border-radius: 30px;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: linear-gradient(45deg, #43d47f, #38e0ae);
+        transform: translateY(-2px);
+    }
+
+    .btn-outline-primary {
+        background: none;
+        border: 2px solid #4CAF50;
+        color: #4CAF50;
+        padding: 10px 25px;
+        border-radius: 30px;
+        font-weight: bold;
+        transition: all 0.3s ease;
+    }
+
+    .btn-outline-primary:hover {
+        background: #4CAF50;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .alert {
+        border-radius: 10px;
+        padding: 15px 20px;
+        margin-bottom: 20px;
+    }
+
+    .alert-error {
+        background: #ffebee;
+        color: #c62828;
+        border: 1px solid #ffcdd2;
+    }
+
+    .alert-success {
+        background: #e8f5e9;
+        color: #2e7d32;
+        border: 1px solid #c8e6c9;
+    }
+
+    .back-link {
+        display: block;
+        text-align: center;
+        margin-top: 20px;
+        color: white;
+        text-decoration: none;
+        font-weight: bold;
+        transition: all 0.3s ease;
+    }
+
+    .back-link:hover {
+        text-decoration: underline;
+        color: #ddd;
+    }
+
+    .form-label {
+        font-weight: bold;
+        color: #333;
+    }
+
+    select {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23444' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        background-size: 1rem;
+        padding-right: 2.5rem;
+    }
+
+    .password-field-container {
+      position: relative;
+    }
+
+    .password-field-container .fas.fa-lock {
+      position: absolute;
+      left: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #aaa;
+      font-size: 1rem;
+    }
+
+    .password-field-container .form-control {
+      padding-left: 45px; /* Make space for the icon */
+    }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <!-- Move flash messages outside the card but inside the container -->
+        <div class="row justify-content-center mb-3">
+            <div class="col-md-8">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert" style="margin: 0 auto; max-width: 500px;">
+                                <i class="fas fa-{{ 'check-circle' if category == 'success' else 'exclamation-circle' }} me-2"></i>
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ _('close') }}"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+            </div>
+        </div>
+        
+        <div class="card" style="max-width: 500px; margin: 0 auto;">
+            <div class="card-header">
+                <h2 class="mb-0"><i class="fas fa-lock me-2"></i>{{ _('login') }}</h2>
+                <p class="text-muted mb-0">{{ _('please_enter_your_credentials') }}</p>
+            </div>
+            <div class="card-body">
+
+                <form id="login-form" method="POST" action="{{ url_for('login', lang_code=g.lang_code) }}">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="mb-3">
+                        <label for="username" class="form-label">{{ _('username') }}</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-user"></i></span>
+                            {{ form.username(class_="form-control" + (" is-invalid" if form.username.errors else ""), 
+                                          placeholder=_('please_enter_your_username')) }}
+                        </div>
+                        {% if form.username.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.username.errors[0] }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="password" class="form-label">{{ _('password') }}</label>
+                        <div class="password-field-container">
+                            <i class="fas fa-lock"></i>
+                            {{ form.password(class_="form-control" + (" is-invalid" if form.password.errors else ""), 
+                                          placeholder=_('please_enter_your_password')) }}
+                        </div>
+                        {% if form.password.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.password.errors[0] }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="role" class="form-label">{{ _('role') }}</label>
+                        {{ form.role(class_="form-select" + (" is-invalid" if form.role.errors else ""), 
+                                   **{'aria-label': _('select_role')}) }}
+                        {% if form.role.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.role.errors[0] }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" id="login-button" class="btn btn-primary btn-lg">
+                            <span id="button-text">{{ _('login') }}</span>
+                            <span id="button-spinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                        </button>
+                    </div>
+
+                    <div class="text-center mt-3">
+                        <p class="mb-0">{{ _('dont_have_account') }} <a href="{{ url_for('register', lang_code=g.lang_code) }}">{{ _('register') }}</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <a href="{{ url_for('home', lang_code=g.lang_code) }}" class="back-link">
+            <i class="fas fa-arrow-left me-2"></i>{{ _('back_to_home') }}
+        </a>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('login-form');
+        const submitButton = document.getElementById('login-button');
+        const buttonText = document.getElementById('button-text');
+        const buttonSpinner = document.getElementById('button-spinner');
+        const processingText = "{{ _('processing')|safe }}";
+        
+        if (form && submitButton && buttonText) {
+            const initialButtonText = buttonText.textContent.trim();
+            
+            form.addEventListener('submit', function(e) {
+                // Disable the submit button and show spinner
+                submitButton.disabled = true;
+                buttonText.textContent = processingText;
+                buttonSpinner.classList.remove('d-none');
+                
+                // Add a delay to show the loading state (optional)
+                setTimeout(() => {
+                    // This will allow the form to submit normally
+                    // The button will be re-enabled if there's a validation error
+                    if (!form.checkValidity()) {
+                        submitButton.disabled = false;
+                        buttonText.textContent = initialButtonText;
+                        buttonSpinner.classList.add('d-none');
+                    }
+                }, 100);
+            });
+            
+            // Re-enable the button if form submission fails
+            window.addEventListener('pageshow', function(event) {
+                if (event.persisted) {
+                    submitButton.disabled = false;
+                    buttonText.textContent = initialButtonText;
+                    buttonSpinner.classList.add('d-none');
+                }
+            });
+            
+            // Add input validation feedback
+            const inputs = form.querySelectorAll('input[required], select[required]');
+            inputs.forEach(input => {
+                input.addEventListener('invalid', function(e) {
+                    e.preventDefault();
+                    this.classList.add('is-invalid');
+                    
+                    // Add validation message
+                    const validationMessage = this.validationMessage;
+                    let feedback = this.nextElementSibling;
+                    
+                    if (!feedback || !feedback.classList.contains('invalid-feedback')) {
+                        feedback = document.createElement('div');
+                        feedback.className = 'invalid-feedback d-block';
+                        this.parentNode.insertBefore(feedback, this.nextSibling);
+                    }
+                    
+                    feedback.textContent = validationMessage;
+                });
+                
+                input.addEventListener('input', function() {
+                    if (this.checkValidity()) {
+                        this.classList.remove('is-invalid');
+                        const feedback = this.nextElementSibling;
+                        if (feedback && feedback.classList.contains('invalid-feedback')) {
+                            feedback.textContent = '';
+                        }
+                    }
+                });
+            });
+        }
+    });
+    </script>
+{% endblock %}

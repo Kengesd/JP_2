@@ -1,0 +1,1000 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('doctor_system') }}{% endblock %}
+
+{% block extra_css %}
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <style>
+    body {
+      animation: fadeIn 1s ease-in;
+      font-family: 'Prompt', sans-serif;
+      background: linear-gradient(135deg, #e0f7fa, #e1bee7);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 0;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .container {
+      max-width: 1200px;
+      width: 100%;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      padding: 30px;
+      margin-bottom: 20px;
+    }
+
+    .card h2 {
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      font-weight: 600;
+      color: #444;
+    }
+
+    .nav-tabs .nav-link {
+      font-weight: 500;
+    }
+
+    .nav-tabs .nav-link.active {
+      font-weight: 600;
+    }
+
+    .table th {
+      font-weight: 600;
+    }
+
+    .alert {
+      border-radius: 10px;
+    }
+
+    .btn {
+      border-radius: 8px;
+      font-weight: 500;
+    }
+
+    .form-control {
+      border-radius: 8px;
+      padding: 10px 15px;
+      border: 1px solid #dee2e6;
+    }
+
+    .form-control:focus {
+      border-color: #86b7fe;
+      box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+
+    .btn i {
+      margin-right: 5px;
+    }
+
+    .table-responsive {
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .table {
+      margin-bottom: 0;
+    }
+
+    .table th {
+      background-color: #f8f9fa;
+    }
+
+    .badge {
+      font-weight: 500;
+      padding: 6px 10px;
+    }
+
+    .alert {
+      margin-bottom: 1.5rem;
+    }
+    
+    .form-control:focus {
+      border-color: #7e57c2;
+      box-shadow: 0 0 0 0.2rem rgba(126, 87, 194, 0.2);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #7b1fa2, #4db6ac);
+      color: white;
+      border: none;
+      padding: 12px;
+      font-weight: bold;
+      border-radius: 30px;
+      width: 100%;
+      margin-top: 15px;
+    }
+
+    .btn-primary:hover {
+      opacity: 0.9;
+    }
+
+    .table-container {
+      margin-top: 30px;
+    }
+
+    .table th, .table td {
+      vertical-align: middle;
+    }
+
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      color: #6a1b9a;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+    }
+
+    .logout-btn {
+      margin-top: 10px;
+      text-align: right;
+    }
+  </style>
+{% endblock %}
+
+{% block extra_js %}
+  <!-- Load jQuery first -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <!-- Then load Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Then load Socket.IO -->
+  <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+  <!-- Then load Axios -->
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    // Translation strings
+    const translations = {
+      'patient_list': '{{ _("patient_list") }}',
+      'waiting': '{{ _("waiting") }}',
+      'in_progress': '{{ _("in_progress") }}',
+      'completed': '{{ _("completed") }}',
+      'prescribe_medicine': '{{ _("prescribe_medicine") }}',
+      'select_patient': '{{ _("select_patient") }}',
+      'select_medicine': '{{ _("select_medicine") }}',
+      'add_medicine': '{{ _("add_medicine") }}',
+      'quantity': '{{ _("quantity") }}',
+      'dosage': '{{ _("dosage") }}',
+      'instructions': '{{ _("instructions") }}',
+      'submit': '{{ _("submit") }}',
+      'medicine_manager': '{{ _("medicine_manager") }}',
+      'add_new_medicine': '{{ _("add_new_medicine") }}',
+      'medicine_name': '{{ _("medicine_name") }}',
+      'stock': '{{ _("stock") }}',
+      'price': '{{ _("price") }}',
+      'close': '{{ _("close") }}',
+      'save_changes': '{{ _("save_changes") }}',
+      'no_patients': '{{ _("no_patients") }}',
+      'patient_name': '{{ _("patient_name") }}',
+      'symptoms': '{{ _("symptoms") }}',
+      'status': '{{ _("status") }}',
+      'action': '{{ _("action") }}',
+      'view': '{{ _("view") }}',
+      'prescribe': '{{ _("prescribe") }}',
+      'no_medicines': '{{ _("no_medicines") }}',
+      'edit': '{{ _("edit") }}',
+      'delete': '{{ _("delete") }}',
+      'confirm_delete': '{{ _("confirm_delete") }}',
+      'cancel': '{{ _("cancel") }}',
+      'confirm': '{{ _("confirm") }}',
+      'success': '{{ _("success") }}',
+      'error': '{{ _("error") }}',
+      'prescription_success': '{{ _("prescription_success") }}',
+      'medicine_added': '{{ _("medicine_added") }}',
+      'medicine_updated': '{{ _("medicine_updated") }}'
+    };
+    
+    // Initialize Socket.IO
+    const socket = io({
+      path: '/socket.io',
+      transports: ['websocket'],
+      upgrade: true,
+      reconnection: true,
+      reconnectionAttempts: 5,
+      reconnectionDelay: 1000,
+      reconnectionDelayMax: 5000,
+      timeout: 20000
+    });
+    
+    // Socket.IO event handlers
+    socket.on('connect', function() {
+      console.log('Connected to Socket.IO server');
+    });
+
+    socket.on('disconnect', function() {
+      console.log('Disconnected from Socket.IO server');
+    });
+
+    socket.on('connect_error', function(error) {
+      console.error('Socket.IO connection error:', error);
+    });
+    
+    // Alert container
+    const alertContainer = document.createElement('div');
+    alertContainer.id = 'alert-container';
+    document.body.insertBefore(alertContainer, document.body.firstChild);
+  </script>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="card">
+    <!-- Header with title and actions -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2 class="mb-0">
+        <i class="fas fa-user-md me-2"></i> {{ _('doctor_system') }}
+      </h2>
+      <div>
+        <button type="button" class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#medicineModal">
+          <i class="fas fa-pills"></i> {{ _('manage_medicines') }}
+        </button>
+        <a href="{{ url_for('logout') }}" class="btn btn-outline-danger">
+          <i class="fas fa-sign-out-alt"></i> {{ _('logout') }}
+        </a>
+      </div>
+    </div>
+
+    <!-- Alert container -->
+    <div id="alert-container"></div>
+
+    <!-- Navigation Tabs -->
+    <ul class="nav nav-tabs mb-4" id="doctorTabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="patients-tab" data-bs-toggle="tab" 
+                data-bs-target="#patients" type="button" role="tab" 
+                aria-controls="patients" aria-selected="true">
+          <i class="fas fa-users me-1"></i> {{ _('patient_list') }}
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="prescribe-tab" data-bs-toggle="tab" 
+                data-bs-target="#prescribe" type="button" role="tab" 
+                aria-controls="prescribe" aria-selected="false">
+          <i class="fas fa-file-prescription me-1"></i> {{ _('prescription') }}
+        </button>
+      </li>
+    </ul>
+
+    <!-- Tab Content -->
+    <div class="tab-content" id="doctorTabContent">
+      <!-- Patients Tab -->
+      <div class="tab-pane fade show active" id="patients" role="tabpanel" aria-labelledby="patients-tab">
+        <!-- Stats Cards -->
+        <div class="row text-center mb-4">
+          <div class="col-md-6 mb-3">
+            <div class="bg-white p-3 rounded shadow-sm">
+              <h5 class="mb-1">{{ _('total_patients') }}</h5>
+              <h3 class="text-primary">{{ stats.waiting_patients + stats.completed_patients }}</h3>
+            </div>
+          </div>
+          <div class="col-md-6 mb-3">
+            <div class="bg-white p-3 rounded shadow-sm">
+              <h5 class="mb-1">{{ _('waiting_for_medicine') }}</h5>
+              <h3 class="text-warning">{{ stats.waiting_patients }}</h3>
+            </div>
+          </div>
+        </div>
+
+        <!-- Patient List Table -->
+        <div class="table-responsive">
+          <table class="table table-hover align-middle">
+            <thead class="table-light">
+              <tr>
+                <th>{{ _('queue_number') }}</th>
+                <th>{{ _('patient_name') }}</th>
+                <th>{{ _('status') }}</th>
+                <th class="text-end">{{ _('actions') }}</th>
+              </tr>
+            </thead>
+            <tbody id="patient-list">
+              <!-- Patient list will be populated by JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Prescription Tab -->
+      <div class="tab-pane fade" id="prescribe" role="tabpanel" aria-labelledby="prescribe-tab">
+        <form id="prescribe-form">
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="patient_id" class="form-label">
+                <i class="fas fa-user me-2"></i> {{ _('select_patient') }}
+              </label>
+              <select id="patient_id" class="form-select" required>
+                <option value="">{{ _('select_patient') }}...</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label for="medicine-select" class="form-label">
+                <i class="fas fa-pills me-2"></i> {{ _('select_medicine') }}
+              </label>
+              <div class="input-group">
+                <select class="form-select" id="medicine-select" required>
+                  <option value="">{{ _('select_medicine') }}...</option>
+                </select>
+                <button class="btn btn-outline-primary" type="button" id="add-medicine-btn">
+                  <i class="fas fa-plus"></i> {{ _('add') }}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="prescription-notes" class="form-label">
+              <i class="fas fa-notes-medical me-2"></i> {{ _('notes') }}
+            </label>
+            <textarea class="form-control" id="prescription-notes" rows="3" 
+                      placeholder="{{ _('enter_notes_here') }}"></textarea>
+          </div>
+
+          <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-paper-plane me-2"></i> {{ _('submit_prescription') }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Patient list will be populated by JavaScript -->
+    <div class="table-responsive mt-4">
+      <table class="table table-striped table-bordered" id="patient-table">
+        <thead class="table-light">
+          <tr>
+            <th>{{ _('name') }}</th>
+            <th>{{ _('symptoms') }}</th>
+            <th>{{ _('status') }}</th>
+            <th>{{ _('medicine') }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td colspan="4" class="text-center">{{ _('loading_patient_data') }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mt-4">
+      <a href="{{ url_for('home') }}" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left me-2"></i> {{ _('back_to_home') }}
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Medicine Manager Modal -->
+<div class="modal fade" id="medicineManagerModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="fas fa-pills me-2"></i>จัดการข้อมูลยา</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="card mb-4">
+            <div class="card-header">
+              <h6 class="mb-0">เพิ่มยาใหม่</h6>
+            </div>
+            <div class="card-body">
+              <form id="add-medicine-form">
+                <div class="row">
+                  <div class="col-md-4 mb-3">
+                    <label for="medicine-id" class="form-label">รหัสยา *</label>
+                    <input type="text" class="form-control" id="medicine-id" name="id" required>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="medicine-name" class="form-label">ชื่อยา *</label>
+                    <input type="text" class="form-control" id="medicine-name" name="name" required>
+                  </div>
+                  <div class="col-md-2 d-flex align-items-end mb-3">
+                    <button type="submit" class="btn btn-primary w-100">
+                      <i class="fas fa-plus me-1"></i> เพิ่ม
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="table table-striped table-hover">
+              <thead class="table-light">
+                <tr>
+                  <th>รหัสยา</th>
+                  <th>ชื่อยา</th>
+                  <th>วันที่เพิ่ม</th>
+                  <th>การดำเนินการ</th>
+                </tr>
+              </thead>
+              <tbody id="medicine-list">
+                <!-- Medicines will be loaded here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Initialize Bootstrap modal
+    const medicineManagerModal = new bootstrap.Modal(document.getElementById('medicineManagerModal'));
+    
+    // Toggle medicine manager modal
+    document.getElementById('toggle-medicine-manager').addEventListener('click', function() {
+      loadMedicines();
+      medicineManagerModal.show();
+    });
+    
+    // Load medicines when page loads
+    loadMedicines();
+
+    // Function to update medicine dropdown
+    function updateMedicineDropdown(medicines) {
+      const select = document.getElementById('medicine_id');
+      const currentValue = select.value;
+      
+      // Clear existing options except the first one
+      select.innerHTML = '<option value="">-- เลือกยา --</option>';
+      
+      // Add new options
+      medicines.forEach(medicine => {
+        const option = document.createElement('option');
+        option.value = medicine.id;
+        option.textContent = medicine.name;
+        select.appendChild(option);
+      });
+      
+      // Restore selected value if it still exists
+      if (currentValue && medicines.some(m => m.id === currentValue)) {
+        select.value = currentValue;
+      }
+    }
+    
+    // Load medicines
+    function loadMedicines() {
+      axios.get('/get_medicines')
+        .then(response => {
+          const tbody = document.getElementById('medicine-list');
+          tbody.innerHTML = '';
+          
+          if (!response.data || response.data.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" class="text-center">ไม่พบข้อมูลยา</td></tr>';
+            updateMedicineDropdown([]);
+            return;
+          }
+          
+          // Update the dropdown first
+          updateMedicineDropdown(response.data);
+          
+          // Then update the table
+          response.data.forEach(medicine => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td>${medicine.id || ''}</td>
+              <td>${medicine.name || ''}</td>
+              <td>${medicine.created_at ? new Date(medicine.created_at).toLocaleDateString('th-TH') : ''}</td>
+              <td>
+                <button class="btn btn-sm btn-danger delete-medicine" 
+                        data-id="${medicine.id}" 
+                        onclick="deleteMedicine('${medicine.id}', '${medicine.name.replace(/'/g, '\'')}')"
+                        title="ลบยา"
+                        data-bs-toggle="tooltip">
+                  <i class="fas fa-trash-alt me-1"></i>ลบ
+                </button>
+              </td>
+            `;
+            tbody.appendChild(row);
+          });
+        })
+        .catch(error => {
+          console.error('Error loading medicines:', error);
+          const errorMessage = error.response?.data?.message || 'เกิดข้อผิดพลาดในการโหลดข้อมูลยา';
+          alert(errorMessage);
+        });
+    }
+    
+    // Add new medicine
+    document.getElementById('add-medicine-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const formData = {
+        id: document.getElementById('medicine-id').value.trim(),
+        name: document.getElementById('medicine-name').value.trim()
+      };
+
+      // Basic validation
+      if (!formData.id || !formData.name) {
+        alert('กรุณากรอกรหัสยาและชื่อยาให้ครบถ้วน');
+        return;
+      }
+      
+      const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+      
+      // Show loading state
+      const submitBtn = this.querySelector('button[type="submit"]');
+      const originalBtnText = submitBtn.innerHTML;
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> กำลังดำเนินการ...';
+      
+      axios.post('/add_medicine', formData, {
+        headers: {
+          'X-CSRFToken': csrfToken,
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(response => {
+        if (response.data.success) {
+          alert('เพิ่มยาสำเร็จ');
+          document.getElementById('add-medicine-form').reset();
+          loadMedicines();
+          
+          // Close the modal after successful addition
+          const modal = bootstrap.Modal.getInstance(document.getElementById('medicineManagerModal'));
+          if (modal) {
+            modal.hide();
+          }
+        } else {
+          throw new Error(response.data.message || 'เกิดข้อผิดพลาดในการเพิ่มยา');
+        }
+      })
+      .catch(error => {
+        console.error('Error adding medicine:', error);
+        const errorMessage = error.response?.data?.message || error.message || 'เกิดข้อผิดพลาดในการเพิ่มยา';
+        alert(errorMessage);
+      })
+      .finally(() => {
+        // Restore button state
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalBtnText;
+      });
+    });
+    
+    // Delete medicine with confirmation and visual feedback
+    function deleteMedicine(medicineId, medicineName = '') {
+      if (!medicineId) {
+        console.error('No medicine ID provided for deletion');
+        return;
+      }
+      
+      // Show confirmation dialog
+      if (!confirm(`คุณแน่ใจหรือไม่ว่าต้องการลบยา ${medicineName || 'นี้'}?`)) {
+        return;
+      }
+      
+      // Show loading state on the delete button
+      const deleteBtn = document.querySelector(`.delete-medicine[data-id="${medicineId}"]`);
+      const originalBtnHtml = deleteBtn.innerHTML;
+      deleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> กำลังลบ...';
+      deleteBtn.disabled = true;
+      const originalBtnContent = deleteBtn ? deleteBtn.innerHTML : '';
+      
+      if (deleteBtn) {
+        deleteBtn.disabled = true;
+        deleteBtn.classList.remove('btn-danger');
+        deleteBtn.classList.add('btn-secondary');
+        deleteBtn.innerHTML = `
+          <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+          กำลังลบ...
+        `;
+      }
+      
+      // Send delete request using POST
+      fetch(`/delete_medicine/${medicineId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify({})
+      })
+      .then(async response => {
+        const data = await response.json().catch(() => ({}));
+        
+        if (!response.ok) {
+          throw new Error(data.message || 'เกิดข้อผิดพลาดในการลบยา');
+        }
+        
+        // Show success message
+        showAlert('success', 'ลบยาสำเร็จ');
+        
+        // Remove the medicine row from the table with animation
+        const row = document.querySelector(`tr[data-medicine-id="${medicineId}"]`);
+        if (row) {
+          row.style.transition = 'all 0.3s ease';
+          row.style.opacity = '0';
+          setTimeout(() => row.remove(), 300);
+        }
+        
+        // Reload medicines to ensure UI is in sync
+        loadMedicines();
+      })
+      .catch(error => {
+        console.error('Error deleting medicine:', error);
+        showAlert('danger', error.message || 'เกิดข้อผิดพลาดในการลบยา');
+      })
+      .finally(() => {
+        // Restore button state
+        if (deleteBtn) {
+          deleteBtn.disabled = false;
+          deleteBtn.classList.remove('btn-secondary');
+          deleteBtn.classList.add('btn-danger');
+          deleteBtn.innerHTML = `
+            <i class="fas fa-trash-alt me-1"></i>ลบ
+          `;
+        }
+      });
+    }
+    
+    // Function to show Bootstrap alert
+    function showAlert(type, message) {
+      const alertDiv = document.createElement('div');
+      alertDiv.className = `alert alert-${type} alert-dismissible fade show mt-3`;
+      alertDiv.role = 'alert';
+      alertDiv.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      `;
+      
+      const container = document.querySelector('.container');
+      if (container) {
+        container.insertBefore(alertDiv, container.firstChild);
+        
+        // Auto-dismiss after 5 seconds
+        setTimeout(() => {
+          const bsAlert = new bootstrap.Alert(alertDiv);
+          bsAlert.close();
+        }, 5000);
+      }
+    }
+
+    // Socket.IO event handlers
+    function setupSocketHandlers() {
+      // Handle medicine updates
+      socket.on('medicine_update', function(data) {
+        if (data && (data.action === 'add' || data.action === 'delete')) {
+          console.log('Medicine update received:', data.action);
+          // Reload both the table and dropdown
+          loadMedicines();
+          
+          // If it was an add, select the new medicine in the prescription form
+          if (data.action === 'add' && data.medicine) {
+            const select = document.getElementById('medicine_id');
+            if (select) {
+              select.value = data.medicine.id || '';
+            }
+          }
+        }
+      });
+      
+      // Handle online users update
+      socket.on('online_users_update', function(data) {
+        console.log('Online users update:', data);
+        const onlineCount = document.getElementById('online-patients-count');
+        if (onlineCount) {
+          onlineCount.textContent = data.patients || 0;
+        }
+      });
+      
+      // Handle patient updates
+      socket.on('patient_updated', function(data) {
+        console.log('Patient updated:', data);
+        // Update the specific patient's status in the table
+        if (data.patient_id) {
+          updatePatientStatus(data.patient_id, data.status || 'prescribed', data.medicine);
+          
+          // Show notification to the doctor if medicine was prescribed
+          if (data.medicine) {
+            showAlert('success', `สั่งยา ${data.medicine} ให้ผู้ป่วยเรียบร้อยแล้ว`);
+          }
+        }
+      });
+      
+      // Handle patients list updates
+      socket.on('patients_updated', function(data) {
+        if (Array.isArray(data?.patients)) {
+          console.log('Patients list updated:', data.patients.length, 'patients');
+          updatePatientTable(data.patients);
+          updatePatientDropdown(data.patients);
+        }
+      });
+      
+      // Handle new patient registration
+      socket.on('new_patient', function(patient) {
+        console.log('New patient registered:', patient);
+        // Reload patients
+        loadPatients();
+      });
+    }
+    
+
+
+    // Function to load patients
+    function loadPatients() {
+      fetch('/get_patients')
+        .then(response => response.json())
+        .then(patients => {
+          if (Array.isArray(patients)) {
+            updatePatientDropdown(patients);
+            updatePatientTable(patients);
+          } else {
+            console.error('Invalid patients data:', patients);
+            showAlert('danger', 'ข้อมูลผู้ป่วยไม่ถูกต้อง');
+          }
+        })
+        .catch(error => {
+          console.error('Error loading patients:', error);
+          showAlert('danger', 'ไม่สามารถโหลดข้อมูลผู้ป่วยได้');
+        });
+    }
+
+    // Function to update patient dropdown
+    function updatePatientDropdown(patients) {
+      const select = document.getElementById('patient_id');
+      if (!select) return;
+      
+      const currentValue = select.value;
+      select.innerHTML = '<option value="">-- เลือกผู้ป่วย --</option>';
+      
+      // Only show waiting patients in the dropdown
+      const waitingPatients = patients.filter(p => p.status === 'waiting');
+      
+      if (waitingPatients.length === 0) {
+        select.innerHTML += '<option value="" disabled>ไม่มีผู้ป่วยรอรับยา</option>';
+      } else {
+        waitingPatients.forEach(patient => {
+          const option = document.createElement('option');
+          option.value = patient.id;
+          option.textContent = `${patient.name} (${patient.symptoms})`;
+          select.appendChild(option);
+        });
+      }
+      
+      // Restore selected value if still valid
+      if (currentValue && waitingPatients.some(p => p.id === currentValue)) {
+        select.value = currentValue;
+      }
+    }
+
+    // Function to update patient table
+    function updatePatientTable(patients) {
+      const tbody = document.querySelector('#patient-table tbody');
+      if (!tbody) return;
+      
+      tbody.innerHTML = '';
+      
+      if (patients.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="text-center">ไม่พบข้อมูลผู้ป่วย</td></tr>';
+        return;
+      }
+      
+      patients.forEach(patient => {
+        const row = document.createElement('tr');
+        row.dataset.patientId = patient.id;
+        
+        let statusBadge = '';
+        if (patient.status === 'waiting') {
+          statusBadge = '<span class="badge bg-warning">รอตรวจ</span>';
+        } else if (patient.status === 'prescribed') {
+          statusBadge = '<span class="badge bg-success">สั่งยาแล้ว</span>';
+        } else if (patient.status === 'completed') {
+          statusBadge = '<span class="badge bg-secondary">รับยาแล้ว</span>';
+        }
+        
+        row.innerHTML = `
+          <td>${patient.name || '-'}</td>
+          <td>${patient.symptoms || '-'}</td>
+          <td>${statusBadge}</td>
+          <td>${patient.medicine || '-'}</td>
+        `;
+        
+        tbody.appendChild(row);
+      });
+    }
+
+    // Function to update a single patient's status
+    function updatePatientStatus(patientId, status, medicine) {
+      const rows = document.querySelectorAll('#patient-table tbody tr');
+      let found = false;
+      
+      rows.forEach(row => {
+        if (row.dataset.patientId === patientId) {
+          found = true;
+          let statusBadge = '';
+          if (status === 'waiting') {
+            statusBadge = '<span class="badge bg-warning">รอตรวจ</span>';
+          } else if (status === 'prescribed') {
+            statusBadge = '<span class="badge bg-success">สั่งยาแล้ว</span>';
+          } else if (status === 'completed') {
+            statusBadge = '<span class="badge bg-secondary">รับยาแล้ว</span>';
+          }
+          
+          // Update status and medicine columns
+          const cells = row.querySelectorAll('td');
+          if (cells.length >= 3) {
+            cells[2].innerHTML = statusBadge;
+            if (medicine && cells.length >= 4) {
+              cells[3].textContent = medicine;
+            }
+          }
+          
+          // If this patient was just prescribed, remove from dropdown
+          if (status === 'prescribed') {
+            const select = document.getElementById('patient_id');
+            const option = select.querySelector(`option[value="${patientId}"]`);
+            if (option) {
+              option.remove();
+              
+              // If no more patients, update dropdown
+              if (select.options.length <= 1) {
+                select.innerHTML = '<option value="">-- เลือกผู้ป่วย --</option>';
+                select.innerHTML += '<option value="" disabled>ไม่มีผู้ป่วยรอรับยา</option>';
+              }
+            }
+          }
+        }
+      });
+      
+      // If patient not found in the table, reload the patients list
+      if (!found) {
+        loadPatients();
+      }
+    }
+
+    // Initialize form handlers
+    function initializeForms() {
+      const prescribeForm = document.getElementById('prescribe-form');
+      if (prescribeForm) {
+        prescribeForm.addEventListener('submit', handlePrescriptionSubmit);
+      }
+      
+      const addMedicineForm = document.getElementById('add-medicine-form');
+      if (addMedicineForm) {
+        addMedicineForm.addEventListener('submit', handleAddMedicine);
+      }
+    }
+    
+    // Handle prescription form submission
+    async function handlePrescriptionSubmit(e) {
+      e.preventDefault();
+      
+      const patientId = document.getElementById('patient_id')?.value;
+      const medicineId = document.getElementById('medicine-select')?.value;
+      const notes = document.getElementById('prescription-notes')?.value || '';
+      
+      if (!patientId || !medicineId) {
+        showAlert('warning', 'กรุณาเลือกผู้ป่วยและยา');
+        return;
+      }
+      
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      const originalBtnText = submitBtn.innerHTML;
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> กำลังดำเนินการ...';
+      
+      try {
+        const response = await axios.post('/prescribe', {
+          patient_id: patientId,
+          medicine_id: medicineId,
+          notes: notes
+        });
+        
+        if (response.data?.success) {
+          showAlert('success', `สั่งยาให้ผู้ป่วย ${response.data.patient_name || ''} สำเร็จแล้ว`);
+          
+          // Reset form
+          e.target.reset();
+          
+          // Reload patients to update the list
+          loadPatients();
+        } else {
+          throw new Error(response.data?.message || 'เกิดข้อผิดพลาดในการสั่งยา');
+        }
+      } catch (error) {
+        console.error('Error prescribing medicine:', error);
+        const errorMessage = error.response?.data?.message || error.message || 'เกิดข้อผิดพลาดในการสั่งยา';
+        showAlert('danger', errorMessage);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalBtnText;
+      }
+    }
+    
+    // Handle add medicine form submission
+    async function handleAddMedicine(e) {
+      e.preventDefault();
+      
+      const formData = new FormData(e.target);
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      const originalBtnText = submitBtn.innerHTML;
+      
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> กำลังเพิ่ม...';
+      
+      try {
+        const response = await axios.post('/add_medicine', formData);
+        
+        if (response.data?.success) {
+          showAlert('success', 'เพิ่มยาสำเร็จ');
+          e.target.reset();
+          loadMedicines();
+          
+          // Close the modal
+          const modal = bootstrap.Modal.getInstance(document.getElementById('addMedicineModal'));
+          if (modal) modal.hide();
+        } else {
+          throw new Error(response.data?.message || 'เกิดข้อผิดพลาดในการเพิ่มยา');
+        }
+      } catch (error) {
+        console.error('Error adding medicine:', error);
+        const errorMessage = error.response?.data?.message || error.message || 'เกิดข้อผิดพลาดในการเพิ่มยา';
+        showAlert('danger', errorMessage);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalBtnText;
+      }
+    }
+    
+    // Initialize the application when DOM is loaded
+    function initializeApp() {
+      try {
+        // Join the doctor's room
+        socket.emit('join_room', { room: 'doctors_room', type: 'doctor' });
+        
+        // Set up all socket event handlers
+        setupSocketHandlers();
+        
+        // Initialize forms
+        initializeForms();
+        
+        // Load initial data
+        loadPatients();
+        loadMedicines();
+        
+        // Initialize tooltips
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.forEach(function(tooltipTriggerEl) {
+          new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+      } catch (error) {
+        console.error('Error initializing application:', error);
+      }
+    }
+    
+    // Run initialization when DOM is fully loaded
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initializeApp);
+    } else {
+      initializeApp();
+    }
+  </script>
+{% endblock %}
+</body>
+</html>

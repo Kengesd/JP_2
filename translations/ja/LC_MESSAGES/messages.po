@@ -1,0 +1,167 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Medicine Management System\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-07-01 12:22\n"
+"PO-Revision-Date: 2025-07-01 12:22\n"
+"Last-Translator: \n"
+"Language: ja\n"
+"Language-Team: \n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: templates/base.html
+msgid "login"
+msgstr "ログイン"
+
+msgid "username"
+msgstr "ユーザー名"
+
+msgid "password"
+msgstr "パスワード"
+
+msgid "confirm_password"
+msgstr "パスワード確認"
+
+msgid "role"
+msgstr "役割"
+
+msgid "doctor"
+msgstr "👨⚕️ 医師"
+
+msgid "patient"
+msgstr "👤 患者"
+
+msgid "submit"
+msgstr "ログイン"
+
+msgid "select_role"
+msgstr "役割を選択"
+
+msgid "welcome"
+msgstr "薬管理システムへようこそ"
+
+msgid "dont_have_account"
+msgstr "アカウントをお持ちでない方"
+
+msgid "register"
+msgstr "登録"
+
+msgid "please_specify_allergies"
+msgstr "アレルギーがある場合はご記入ください"
+
+msgid "processing"
+msgstr "処理中..."
+
+msgid "please_enter_your_username"
+msgstr "ユーザー名を入力してください"
+
+msgid "username_length_validation"
+msgstr "ユーザー名は3〜80文字で入力してください"
+
+msgid "please_enter_your_password"
+msgstr "パスワードを入力してください"
+
+msgid "password_length_validation"
+msgstr "パスワードは6文字以上で入力してください"
+
+msgid "please_select_role"
+msgstr "役割を選択してください"
+
+msgid "please_enter_your_credentials"
+msgstr "ログイン情報を入力してください"
+
+msgid "please_fill_in_all_fields"
+msgstr "すべての必須項目を入力してください"
+
+msgid "name"
+msgstr "氏名"
+
+msgid "email"
+msgstr "メールアドレス"
+
+msgid "phone"
+msgstr "電話番号"
+
+msgid "back_to_home"
+msgstr "ホームに戻る"
+
+msgid "patient_system"
+msgstr "患者管理システム"
+
+msgid "patient_registration"
+msgstr "患者登録"
+
+msgid "register_to_get_medicine"
+msgstr "薬を受け取るには登録してください"
+
+msgid "age"
+msgstr "年齢"
+
+msgid "gender"
+msgstr "性別"
+
+msgid "select_gender"
+msgstr "性別を選択"
+
+msgid "male"
+msgstr "男性"
+
+msgid "female"
+msgstr "女性"
+
+msgid "phone_number"
+msgstr "電話番号"
+
+msgid "symptoms"
+msgstr "症状"
+
+msgid "allergy_history"
+msgstr "アレルギー歴"
+
+msgid "please_wait_for_medicine"
+msgstr "薬の準備をお待ちください"
+
+msgid "processing_your_request"
+msgstr "リクエストを処理中です。しばらくお待ちください..."
+
+msgid "loading"
+msgstr "読み込み中"
+
+msgid "medicine_ready"
+msgstr "薬の準備ができました"
+
+msgid "please_show_qr_code"
+msgstr "カウンターでこのQRコードを提示してください"
+
+msgid "waiting_for_prescription"
+msgstr "処方箋を待機中"
+
+msgid "prescription_ready"
+msgstr "処方箋の準備ができました"
+
+msgid "prescription_ready_message"
+msgstr "処方箋の準備が完了しました！"
+
+msgid "show_qr_code"
+msgstr "QRコードを表示"
+
+msgid "patient_info"
+msgstr "患者情報"
+
+msgid "waiting_time"
+msgstr "推定待ち時間"
+
+msgid "minutes"
+msgstr "分"
+
+msgid "error_occurred"
+msgstr "エラーが発生しました"
+
+msgid "please_wait"
+msgstr "お待ちください"
+
+msgid "prescription_processing"
+msgstr "処方箋を処理中です..."

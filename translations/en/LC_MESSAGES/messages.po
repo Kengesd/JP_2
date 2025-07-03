@@ -1,0 +1,167 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Medicine Management System\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-07-01 12:22\n"
+"PO-Revision-Date: 2025-07-01 12:22\n"
+"Last-Translator: \n"
+"Language: en\n"
+"Language-Team: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: templates/base.html
+msgid "login"
+msgstr "Login"
+
+msgid "username"
+msgstr "Username"
+
+msgid "password"
+msgstr "Password"
+
+msgid "confirm_password"
+msgstr "Confirm Password"
+
+msgid "role"
+msgstr "Role"
+
+msgid "doctor"
+msgstr "👨⚕️ Doctor"
+
+msgid "patient"
+msgstr "👤 Patient"
+
+msgid "submit"
+msgstr "Login"
+
+msgid "select_role"
+msgstr "Select Role"
+
+msgid "welcome"
+msgstr "Welcome to Medicine Management System"
+
+msgid "dont_have_account"
+msgstr "Don't have an account?"
+
+msgid "register"
+msgstr "Register"
+
+msgid "please_specify_allergies"
+msgstr "Please specify any allergies (if any)"
+
+msgid "processing"
+msgstr "Processing..."
+
+msgid "please_enter_your_username"
+msgstr "Please enter your username"
+
+msgid "username_length_validation"
+msgstr "Username must be between 3-80 characters"
+
+msgid "please_enter_your_password"
+msgstr "Please enter your password"
+
+msgid "password_length_validation"
+msgstr "Password must be at least 6 characters"
+
+msgid "please_select_role"
+msgstr "Please select a role"
+
+msgid "please_enter_your_credentials"
+msgstr "Please enter your credentials to log in"
+
+msgid "please_fill_in_all_fields"
+msgstr "Please fill in all required fields"
+
+msgid "name"
+msgstr "Full Name"
+
+msgid "email"
+msgstr "Email"
+
+msgid "phone"
+msgstr "Phone Number"
+
+msgid "back_to_home"
+msgstr "Back to Home"
+
+msgid "patient_system"
+msgstr "Patient System"
+
+msgid "patient_registration"
+msgstr "Patient Registration"
+
+msgid "register_to_get_medicine"
+msgstr "Register to get medicine"
+
+msgid "age"
+msgstr "Age"
+
+msgid "gender"
+msgstr "Gender"
+
+msgid "select_gender"
+msgstr "Select Gender"
+
+msgid "male"
+msgstr "Male"
+
+msgid "female"
+msgstr "Female"
+
+msgid "phone_number"
+msgstr "Phone Number"
+
+msgid "symptoms"
+msgstr "Symptoms"
+
+msgid "allergy_history"
+msgstr "Allergy History"
+
+msgid "please_wait_for_medicine"
+msgstr "Please wait for your medicine"
+
+msgid "processing_your_request"
+msgstr "We are processing your request, please wait..."
+
+msgid "loading"
+msgstr "Loading"
+
+msgid "medicine_ready"
+msgstr "Medicine Ready"
+
+msgid "please_show_qr_code"
+msgstr "Please show this QR code at the counter"
+
+msgid "waiting_for_prescription"
+msgstr "Waiting for Prescription"
+
+msgid "prescription_ready"
+msgstr "Prescription Ready"
+
+msgid "prescription_ready_message"
+msgstr "Your prescription is ready!"
+
+msgid "show_qr_code"
+msgstr "Show QR Code"
+
+msgid "patient_info"
+msgstr "Patient Information"
+
+msgid "waiting_time"
+msgstr "Estimated waiting time"
+
+msgid "minutes"
+msgstr "minutes"
+
+msgid "error_occurred"
+msgstr "An error occurred"
+
+msgid "please_wait"
+msgstr "Please wait"
+
+msgid "prescription_processing"
+msgstr "Processing your prescription..."

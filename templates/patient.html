@@ -1,0 +1,560 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('patient_system') }}{% endblock %}
+
+{% block extra_css %}
+  <style>
+    body {
+      animation: fadeIn 1s ease-in;
+      font-family: 'Prompt', sans-serif;
+      background: linear-gradient(135deg, #e0f7fa, #e1bee7);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .container {
+      max-width: 600px;
+      width: 100%;
+    }
+    .card {
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(16px);
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      overflow: hidden;
+    }
+    .card-header {
+      background: transparent;
+      padding: 30px;
+      text-align: center;
+    }
+    .card-header h1 {
+      font-size: 28px;
+      font-weight: bold;
+      color: #333;
+    }
+    .form-label {
+      font-weight: 600;
+      color: #444;
+    }
+    .form-control {
+      border-radius: 12px;
+      padding: 12px 18px;
+      border: 1px solid #ccc;
+      margin-bottom: 18px;
+      transition: all 0.2s ease-in-out;
+    }
+    .form-control:focus {
+      border-color: #7e57c2;
+      box-shadow: 0 0 0 0.2rem rgba(126, 87, 194, 0.2);
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #7b1fa2, #4db6ac);
+      color: white;
+      border: none;
+      padding: 12px;
+      font-weight: bold;
+      border-radius: 30px;
+      width: 100%;
+    }
+    .btn-primary:hover {
+      opacity: 0.9;
+    }
+    .qr-card {
+      margin-top: 20px;
+      background: #fff;
+      border-radius: 20px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .qr-card img {
+      max-width: 200px;
+      margin-top: 10px;
+    }
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      color: #6a1b9a;
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .back-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+  <div class="container">
+    <!-- Waiting for prescription section -->
+    <div id="waitingSection" class="card d-none">
+      <div class="card-body text-center p-5">
+        <div class="spinner-border text-primary mb-4" style="width: 4rem; height: 4rem;" role="status">
+          <span class="visually-hidden">{{ _('loading') }}...</span>
+        </div>
+        <h3 class="mb-3">{{ _('please_wait_for_medicine') }}</h3>
+        <p class="text-muted">{{ _('processing_your_request') }}</p>
+        <div id="waitingInfo" class="mt-4">
+          <p class="mb-1">{{ _('name') }}: <strong id="waitingPatientName"></strong></p>
+          <p class="mb-1">{{ _('symptoms') }}: <span id="waitingSymptoms"></span></p>
+          <p class="mb-0">{{ _('queue_number') }}: <span class="badge bg-primary" id="waitingQueueNumber"></span></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main form section -->
+    <div id="mainForm" class="card">
+      <div class="card-header">
+        <h1><i class="fas fa-user-injured me-2"></i>{{ _('patient_registration') }}</h1>
+        <p>{{ _('register_to_get_medicine') }}</p>
+      </div>
+      <div class="card-body">
+        <form id="patientForm">
+          <div class="mb-4">
+            <label for="name" class="form-label">{{ _('name') }}</label>
+            <input type="text" class="form-control" id="name" name="name" required>
+          </div>
+
+          <div class="row mb-4">
+            <div class="col-md-6">
+              <label for="age" class="form-label">{{ _('age') }}</label>
+              <input type="number" class="form-control" id="age" name="age" required min="1" max="120">
+            </div>
+            <div class="col-md-6">
+              <label for="gender" class="form-label">{{ _('gender') }}</label>
+              <select class="form-control" id="gender" name="gender" required>
+                <option value="">{{ _('select_gender') }}</option>
+                <option value="male">{{ _('male') }}</option>
+                <option value="female">{{ _('female') }}</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label for="phone" class="form-label">{{ _('phone_number') }}</label>
+            <input type="tel" class="form-control" id="phone" name="phone" required
+                   pattern="[0-9]{10}" title="กรุณากรอกเบอร์โทรศัพท์ 10 หลัก" maxlength="10">
+          </div>
+
+          <div class="mb-4">
+            <label for="symptoms" class="form-label">{{ _('symptoms') }}</label>
+            <textarea class="form-control" id="symptoms" name="symptoms" rows="3" required></textarea>
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label"><i class="fas fa-allergies me-2"></i>{{ _('allergy_history') }}</label>
+            <textarea class="form-control" id="allergy" name="allergy" rows="2"
+                      data-placeholder="{{ _('please_specify_allergies') }}"></textarea>
+          </div>
+
+          <div class="text-center">
+            <button type="submit" class="btn btn-primary btn-lg w-100" id="submitBtn">
+              <i class="fas fa-paper-plane me-2"></i>{{ _('register') }}
+            </button>
+          </div>
+        </form>
+
+        <a href="{{ url_for('home') }}" class="back-link">
+          <i class="fas fa-arrow-left me-2"></i>{{ _('back_to_home') }}
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- QR Code Modal -->
+  <div class="modal fade" id="qrModal" tabindex="-1" aria-labelledby="qrModalLabel" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-success text-white">
+          <h5 class="modal-title" id="qrModalLabel"><i class="fas fa-pills me-2"></i>{{ _('medicine_ready') }}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ _('close') }}"></button>
+        </div>
+        <div class="modal-body text-center">
+          <div id="qrCode" class="mb-4"></div>
+          <h5 class="mb-3">{{ _('please_show_qr_code') }}</h5>
+          <p class="text-muted">{{ _('queue_number') }}: <span id="queueNumber" class="fw-bold"></span></p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('close') }}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block extra_js %}
+  <script>
+    // Set placeholder text from data attribute after page loads
+    document.addEventListener('DOMContentLoaded', function() {
+      const allergyInput = document.getElementById('allergy');
+      if (allergyInput) {
+        allergyInput.placeholder = allergyInput.getAttribute('data-placeholder');
+      }
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+  <script>
+    // Initialize Socket.IO
+    const socket = io({
+      hostname: window.location.hostname,
+      port: 10000,
+      // Enable WebSocket only for better performance
+      transports: ['websocket'],
+      upgrade: false,
+      // Add reconnection settings
+      reconnection: true,
+      reconnectionAttempts: 5,
+      reconnectionDelay: 1000,
+      reconnectionDelayMax: 5000,
+      timeout: 20000
+    });
+    
+    // Translation strings
+    const translations = {
+      'waiting_for_prescription': '{{ _("waiting_for_prescription") }}',
+      'prescription_ready': '{{ _("prescription_ready") }}',
+      'prescription_ready_message': '{{ _("prescription_ready_message") }}',
+      'show_qr_code': '{{ _("show_qr_code") }}',
+      'close': '{{ _("close") }}',
+      'patient_info': '{{ _("patient_info") }}',
+      'name': '{{ _("name") }}',
+      'queue_number': '{{ _("queue_number") }}',
+      'waiting_time': '{{ _("waiting_time") }}',
+      'minutes': '{{ _("minutes") }}',
+      'submit': '{{ _("submit") }}',
+      'processing': '{{ _("processing") }}',
+      'error_occurred': '{{ _("error_occurred") }}',
+      'please_wait': '{{ _("please_wait") }}',
+      'prescription_processing': '{{ _("prescription_processing") }}'
+    };
+    
+    // Store patient ID after registration
+    let patientId = null;
+    
+    // Handle connection events
+    socket.on('connect', () => {
+      console.log('Connected to WebSocket server');
+      // If we have a patient ID in session storage, join the room
+      const storedPatientId = sessionStorage.getItem('patientId');
+      if (storedPatientId) {
+        patientId = storedPatientId;
+        socket.emit('join_room', { room: patientId, type: 'patient' });
+        // Show waiting section if not already shown
+        showWaitingSection({
+          name: sessionStorage.getItem('patientName') || '',
+          symptoms: sessionStorage.getItem('patientSymptoms') || '',
+          id: storedPatientId
+        });
+      }
+    });
+    
+    socket.on('connect_error', (error) => {
+      console.error('WebSocket connection error:', error);
+      showAlert('warning', 'การเชื่อมต่อกับเซิร์ฟเวอร์ขัดข้อง โปรดรอสักครู่...');
+    });
+    
+    socket.on('disconnect', () => {
+      console.log('Disconnected from WebSocket server');
+    });
+    
+    // Handle reconnection
+    socket.io.on('reconnect', (attempt) => {
+      console.log(`Reconnected after ${attempt} attempts`);
+      if (patientId) {
+        socket.emit('join_room', { room: patientId, type: 'patient' });
+      }
+    });
+    
+    // Initialize QR code modal
+    let qrModal = null;
+    
+    // Initialize modal when needed
+    function initQRModal() {
+      if (!qrModal) {
+        const modalElement = document.getElementById('qrModal');
+        qrModal = new bootstrap.Modal(modalElement, {
+          backdrop: 'static',
+          keyboard: false
+        });
+        
+        // Handle modal close
+        modalElement.addEventListener('hidden.bs.modal', function () {
+          // Redirect to home page when modal is closed
+          window.location.href = '/';
+        });
+      }
+      return qrModal;
+    }
+    
+    // Show waiting section with patient info
+    function showWaitingSection(patientData) {
+      document.getElementById('mainForm').classList.add('d-none');
+      const waitingSection = document.getElementById('waitingSection');
+      waitingSection.classList.remove('d-none');
+      
+      // Update patient info
+      document.getElementById('waitingPatientName').textContent = patientData.name;
+      document.getElementById('waitingSymptoms').textContent = patientData.symptoms;
+      document.getElementById('waitingQueueNumber').textContent = patientData.id;
+      
+      // Show a countdown or status message
+      const statusMessage = document.createElement('p');
+      statusMessage.className = 'text-muted mt-3';
+      statusMessage.id = 'statusMessage';
+      statusMessage.textContent = 'กรุณารอให้แพทย์ตรวจสอบและสั่งยา...';
+      waitingSection.querySelector('.patient-info').appendChild(statusMessage);
+      
+      // Start checking status periodically
+      checkPrescriptionStatus();
+    }
+    
+    // Check prescription status
+    function checkPrescriptionStatus() {
+      if (!patientId) return;
+      
+      fetch(`/get_patient/${patientId}`)
+        .then(response => response.json())
+        .then(patient => {
+          if (patient.status === 'prescribed' && patient.qr_code) {
+            // Prescription is ready, show QR code
+            showPrescriptionReady(patient);
+          } else {
+            // Check again in 5 seconds
+            setTimeout(checkPrescriptionStatus, 5000);
+          }
+        })
+        .catch(error => {
+          console.error('Error checking prescription status:', error);
+          // Retry after delay
+          setTimeout(checkPrescriptionStatus, 10000);
+        });
+    }
+    
+    // Show prescription ready with QR code
+    function showPrescriptionReady(patientData) {
+      try {
+        // Update modal content
+        document.getElementById('patientName').textContent = patientData.name;
+        document.getElementById('medicineInfo').textContent = patientData.medicine || 'ไม่ระบุ';
+        
+        // Format prescribed time
+        if (patientData.prescribed_time) {
+          const time = new Date(patientData.prescribed_time);
+          document.getElementById('prescribedTime').textContent = time.toLocaleString('th-TH', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+          });
+        }
+        
+        // Generate QR code with machine-readable data
+        const qrCanvas = document.getElementById('qr-canvas');
+        qrCanvas.innerHTML = ''; // Clear previous QR code
+        
+        // Create machine-readable data for the dispensing machine
+        const qrData = {
+          t: 'rx',  // Type: prescription
+          p: patientData.id,  // Patient ID
+          m: patientData.medicine_id,  // Medicine ID
+          q: patientData.quantity,  // Quantity
+          ts: Math.floor(Date.now() / 1000)  // Timestamp
+        };
+        
+        // Generate QR code with the machine data
+        const qr = new QRCode(qrCanvas, {
+          text: JSON.stringify(qrData),
+          width: 250,
+          height: 250,
+          colorDark: '#000000',
+          colorLight: '#ffffff',
+          correctLevel: QRCode.CorrectLevel.H
+        });
+        
+        // Add instruction text
+        const instruction = document.createElement('p');
+        instruction.className = 'text-center mt-3 text-muted';
+        instruction.textContent = 'กรุณานำ QR Code นี้ไปสแกนที่ตู้จ่ายยา';
+        qrCanvas.parentNode.insertBefore(instruction, qrCanvas.nextSibling);
+        
+        // Initialize and show the modal
+        const modal = initQRModal();
+        modal.show();
+        
+        // Hide waiting section
+        document.getElementById('waitingSection').classList.add('d-none');
+        
+        // Reset form for next patient
+        document.getElementById('patientForm').reset();
+        
+        // Clear stored patient data
+        sessionStorage.removeItem('patientId');
+        sessionStorage.removeItem('patientName');
+        sessionStorage.removeItem('patientSymptoms');
+        patientId = null;
+        
+      } catch (error) {
+        console.error('Error showing prescription:', error);
+        showAlert('danger', 'เกิดข้อผิดพลาดในการแสดง QR Code');
+      }
+    }
+    
+    // Handle form submission
+    document.getElementById('patientForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      // Show loading state
+      const submitBtn = document.getElementById('submitBtn');
+      const originalBtnText = submitBtn.innerHTML;
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> กำลังดำเนินการ...';
+      
+      // Get form data
+      const formData = {
+        name: document.getElementById('name').value.trim(),
+        age: document.getElementById('age').value.trim(),
+        gender: document.getElementById('gender').value,
+        phone: document.getElementById('phone').value.trim(),
+        symptoms: document.getElementById('symptoms').value.trim(),
+        allergy: document.getElementById('allergy').value.trim()
+      };
+      
+      // Validate form
+      if (!formData.name || !formData.age || !formData.gender || !formData.phone || !formData.symptoms) {
+        showAlert('danger', 'กรุณากรอกข้อมูลให้ครบถ้วน');
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalBtnText;
+        return;
+      }
+      
+      // Validate phone number (Thai format)
+      if (!/^0[0-9]{9}$/.test(formData.phone)) {
+        showAlert('danger', 'กรุณากรอกหมายเลขโทรศัพท์ให้ถูกต้อง (ตัวเลข 10 หลักขึ้นต้นด้วย 0)');
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalBtnText;
+        return;
+      }
+      
+      // Submit form data
+      fetch('/api/submit_patient', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        body: JSON.stringify(formData)
+      })
+      .then(response => {
+        if (!response.ok) {
+          return response.json().then(err => {
+            throw new Error(err.error || 'เกิดข้อผิดพลาดในการส่งข้อมูล');
+          });
+        }
+        return response.json();
+      })
+      .then(data => {
+        if (data.success) {
+          // Store patient data
+          patientId = data.patient_id;
+          sessionStorage.setItem('patientId', patientId);
+          sessionStorage.setItem('patientName', formData.name);
+          sessionStorage.setItem('patientSymptoms', formData.symptoms);
+          
+          // Join patient's room for real-time updates
+          socket.emit('join_room', { room: patientId, type: 'patient' });
+          
+          // Show waiting section
+          showWaitingSection({
+            name: formData.name,
+            symptoms: formData.symptoms,
+            id: patientId
+          });
+          
+          // Reset form
+          this.reset();
+          
+          // Show success message
+          showAlert('success', 'ลงทะเบียนสำเร็จ กรุณารอรับยาที่จุดจ่ายยา');
+        } else {
+          throw new Error(data.error || 'เกิดข้อผิดพลาดในการลงทะเบียน');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        showAlert('danger', error.message || 'เกิดข้อผิดพลาดในการส่งข้อมูล');
+      })
+      .finally(() => {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalBtnText;
+      });
+    });  
+    
+    // Handle prescription ready event from server
+    socket.on('prescription_ready', (data) => {
+      console.log('Prescription ready:', data);
+      
+      try {
+        // Parse the QR code data if it's a string
+        let qrData = null;
+        if (data.qr_code) {
+          qrData = typeof data.qr_code === 'string' ? JSON.parse(data.qr_code) : data.qr_code;
+        } else {
+          // If no QR code data, create a basic one with available info
+          qrData = {
+            t: 'rx',
+            p: data.patient_id,
+            m: data.medicine_id || '',
+            q: 1,
+            ts: Math.floor(Date.now() / 1000)
+          };
+        }
+        
+        // Update patient data with the received prescription
+        const patientData = {
+          id: data.patient_id,
+          name: data.patient_name,
+          medicine: data.medicine || 'ไม่ระบุ',
+          medicine_id: qrData.m || '',
+          quantity: qrData.q || 1,
+          prescribed_time: data.prescribed_time || new Date().toISOString(),
+          qr_code: data.qr_image_path ? data.qr_image_path.split('/').pop() : null,
+          status: 'prescribed',
+          qr_data: qrData
+        };
+        
+    
+        // Show the prescription with QR code
+        showPrescriptionReady(patientData);
+      } catch (error) {
+        console.error('Error processing prescription:', error);
+        showAlert('danger', 'เกิดข้อผิดพลาดในการแสดงข้อมูลใบสั่งยา: ' + error.message);
+      }
+    });
+    
+    // Handle connection errors
+    socket.on('connect_error', (error) => {
+      console.error('Socket connection error:', error);
+      showAlert('warning', 'การเชื่อมต่อกับเซิร์ฟเวอร์มีปัญหา กรุณารอสักครู่...');
+    });
+    
+    // Handle disconnection
+    socket.on('disconnect', (reason) => {
+      console.log('Socket disconnected:', reason);
+      if (reason === 'io server disconnect') {
+        // The disconnection was initiated by the server, you need to reconnect manually
+        socket.connect();
+      }
+    });
+  </script>
+{% endblock %}
